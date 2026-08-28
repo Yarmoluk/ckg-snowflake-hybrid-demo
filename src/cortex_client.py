@@ -30,24 +30,48 @@ load_dotenv()
 
 
 def get_connection() -> snowflake.connector.SnowflakeConnection:
-    """One connection, built from .env. Raises loudly if a required var is missing
-    rather than silently connecting with the wrong account."""
-    required = ["SNOWFLAKE_ACCOUNT", "SNOWFLAKE_USER", "SNOWFLAKE_PASSWORD"]
+    """One connection, built from .env. Supports two auth modes:
+
+    - authenticator=externalbrowser (SSO): no password in .env at all — this
+      call pops your default browser open for you to approve the login, the
+      same flow `snow` CLI / Cortex Code use. Needed every time a fresh
+      connection is made (the token isn't cached across processes here).
+    - password auth: the original flow, if SNOWFLAKE_PASSWORD is set instead.
+
+    Raises loudly if a required var is missing rather than silently
+    connecting with the wrong account."""
+    authenticator = os.environ.get("SNOWFLAKE_AUTHENTICATOR", "").strip()
+    # Anything set here means "no password needed" — externalbrowser (SAML SSO)
+    # and OAUTH_AUTHORIZATION_CODE (Snowflake's own native OAuth, what a trial
+    # account provisioned via `snow`/Cortex Code actually uses) both open a
+    # browser for you to approve instead.
+    using_browser_auth = bool(authenticator)
+
+    required = ["SNOWFLAKE_ACCOUNT", "SNOWFLAKE_USER"]
+    if not using_browser_auth:
+        required.append("SNOWFLAKE_PASSWORD")
     missing = [v for v in required if not os.environ.get(v)]
     if missing:
         raise RuntimeError(
             f"Missing required env vars: {', '.join(missing)}. "
             f"Copy .env.example to .env and fill them in from your trial account."
         )
-    return snowflake.connector.connect(
+
+    kwargs = dict(
         account=os.environ["SNOWFLAKE_ACCOUNT"],
         user=os.environ["SNOWFLAKE_USER"],
-        password=os.environ["SNOWFLAKE_PASSWORD"],
         warehouse=os.environ.get("SNOWFLAKE_WAREHOUSE", "CKG_DEMO_WH"),
         database=os.environ.get("SNOWFLAKE_DATABASE", "CKG_DEMO"),
         schema=os.environ.get("SNOWFLAKE_SCHEMA", "PUBLIC"),
         role=os.environ.get("SNOWFLAKE_ROLE", "ACCOUNTADMIN"),
     )
+    if using_browser_auth:
+        kwargs["authenticator"] = authenticator
+        kwargs["client_store_temporary_credential"] = True
+        print(f"→ opening your browser to approve login ({authenticator})...")
+    else:
+        kwargs["password"] = os.environ["SNOWFLAKE_PASSWORD"]
+    return snowflake.connector.connect(**kwargs)
 
 
 @dataclass
