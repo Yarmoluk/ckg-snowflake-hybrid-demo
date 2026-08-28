@@ -1,0 +1,4 @@
+snowflake-connector-python[secure-local-storage]>=3.12
+anthropic>=0.40
+python-dotenv>=1.0
+tabulate>=0.9
