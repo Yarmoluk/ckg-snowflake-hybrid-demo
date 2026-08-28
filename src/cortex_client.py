@@ -26,7 +26,9 @@ from dataclasses import dataclass
 import snowflake.connector
 from dotenv import load_dotenv
 
-load_dotenv()
+# override=True — see src/agent.py for why: a shell-level ANTHROPIC_API_KEY
+# (or any pre-set var) would otherwise silently beat .env's real value.
+load_dotenv(override=True)
 
 
 def get_connection() -> snowflake.connector.SnowflakeConnection:

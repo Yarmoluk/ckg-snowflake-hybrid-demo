@@ -37,7 +37,11 @@ from dotenv import load_dotenv
 from src.cortex_client import get_connection, run_sql
 from src.ckg_query import CKG
 
-load_dotenv()
+# override=True: a shell that already has ANTHROPIC_API_KEY set (e.g. a Claude
+# Code session's own internal token, which looks valid but isn't usable for
+# direct SDK calls) would otherwise silently win over .env's real key —
+# python-dotenv's default is to never overwrite an existing env var.
+load_dotenv(override=True)
 
 TOOLS = [
     {
@@ -93,7 +97,11 @@ def run_tool(name: str, tool_input: dict, ckg: CKG, sf_conn) -> str:
     raise ValueError(f"Unknown tool: {name}")
 
 
-def ask(question: str, max_turns: int = 4) -> str:
+def ask(question: str, max_turns: int = 6) -> str:
+    # 6, not 4: observed the model sometimes check 2-3 CKG concepts before
+    # settling (e.g. "market segment" -> no match -> "AUTOMOBILE" -> match)
+    # before it even reaches the live-query turn plus the final synthesis —
+    # 4 was tight enough to occasionally truncate a real, correct answer.
     client = Anthropic(api_key=os.environ["ANTHROPIC_API_KEY"])
     ckg = CKG()
     sf_conn = get_connection()
