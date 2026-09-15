@@ -1,5 +1,7 @@
 # ckg-snowflake-hybrid-demo
 
+![Hybrid context architecture: a knowledge graph and a Snowflake-style warehouse support a routed agent](assets/images/hybrid-context-architecture-hero.png)
+
 A working demo of one idea: **an agent reasons better when it isn't forced to choose between a live database and a knowledge graph — it should have both, and know which one to reach for.**
 
 Live Snowflake data answers "what's true right now" (revenue, order counts — anything that changes with the next order). A compressed knowledge graph answers "what exists and how does it relate" (segments, regions, supplier structure — facts stable enough that re-querying them every time is waste). This repo builds both, wires one Claude agent to both, and shows it picking the right one per question.
@@ -102,6 +104,41 @@ python -m src.compress_to_ckg
 # Ask the hybrid agent anything
 python -m src.agent "Which region has the most orders, and what customer segments exist there?"
 ```
+
+## Visual explorer
+
+The checked-in graph also has a browser-based explainer: [`web/main.html`](web/main.html).
+It renders the actual `ckg/ecommerce-tpch.csv` artifact as a queryable network and
+shows the intended routing boundary between structural CKG retrieval and live
+Snowflake SQL. It is deliberately a visual explainer, not a live-query console.
+
+Run it from the repository root:
+
+```bash
+python3 -m http.server 8000
+# then open http://localhost:8000/web/main.html
+```
+
+The graph, filters, provenance details, and query-router examples can be used as a
+concise walkthrough in a technical interview. See [`INTERVIEW_BRIEF.md`](INTERVIEW_BRIEF.md)
+for claim-safe talking points and exact answers about Cortex Analyst and production scope.
+
+For a life-sciences-relevant companion demo, open
+[`web/clinical-trials.html`](web/clinical-trials.html). It is a curated, public
+ClinicalTrials.gov context graph of selected Otsuka-affiliated records—not a live
+trial finder, medical advice, or a claim about the complete Otsuka portfolio.
+
+## Native Cortex Analyst semantic view
+
+`sql/03_cortex_analyst_semantic_view.sql` adds a native Snowflake Semantic View
+over the same TPC-H sample data: logical tables, governed joins, dimensions,
+facts, metrics, synonyms, and Cortex Analyst instructions. Run
+`sql/04_semantic_view_checks.sql` immediately afterward to show the object,
+inspect its dimensions/metrics, and execute two governed Semantic SQL queries.
+
+This is deliberately separate from the CKG: the CKG remains the structural,
+provenance-backed context layer; the Semantic View is the native governed layer
+for Analyst-generated SQL.
 
 That last question is a good one to try by hand — it needs **both** tools: "what segments exist" is structural (the graph answers it free), "most orders by region" is a current number (needs a live query). Watch which tools the agent reaches for and in what order.
 
