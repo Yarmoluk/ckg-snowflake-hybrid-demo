@@ -44,3 +44,28 @@ the repository does not support.
 - [x] Native semantic-view DDL and governed Semantic SQL verification script added.
 - [ ] Live execution is blocked in this sandbox because Snowflake OAuth needs a local
   callback listener. Run the two SQL files in Snowsight or from Daniel's local terminal.
+
+## Public documentation-site delivery
+
+### Goal
+
+Turn the repository into a credible public technical artifact: a concise README,
+an MkDocs Material site, interactive demo entry points, and GitHub Pages
+automation. The supplied Snowflake/Cortex artwork will identify the integration
+theme without suggesting Snowflake endorsement or affiliation.
+
+### Deliverables
+
+1. A brand-forward MkDocs site covering the hybrid architecture, native Semantic
+   View, live demos, reproducible setup, and claim-safe interview context.
+2. A rewritten README that is useful to a recruiter, engineer, or evaluator in
+   under two minutes, with direct links to the public site and runnable assets.
+3. A GitHub Actions GitHub Pages workflow and docs-only dependency manifest.
+
+### Validation
+
+- Copy and inspect the provided SVG locally; retain it as a source asset inside
+  the repository.
+- Build the documentation with MkDocs in strict mode.
+- Validate the checked-in graph data references before publishing.
+- Push the completed public artifact and enable workflow-based GitHub Pages.

@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="schema" content="https://dmccreary.github.io/intelligent-textbooks/ns/microsim/v1">
+    <title>Clinical Trial Context Graph</title>
+    <link rel="preconnect" href="https://unpkg.com">
+    <link rel="stylesheet" href="https://unpkg.com/vis-network/styles/vis-network.min.css">
+    <link rel="stylesheet" href="style.css">
+    <script defer src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
+    <script defer src="clinical-trials.js"></script>
+  </head>
+  <body>
+    <main class="app-shell clinical-shell">
+      <header class="masthead">
+        <div>
+          <p class="eyebrow">PUBLIC CLINICALTRIALS.GOV RECORDS · CONTEXT GRAPH</p>
+          <h1>From study records to governed context.</h1>
+          <p class="subtitle">A compact, inspectable map of selected Otsuka-affiliated public trial records—studies, conditions, interventions, phases, and status.</p>
+        </div>
+        <a class="trust-badge source-badge" href="https://clinicaltrials.gov/data-api/api" target="_blank" rel="noreferrer"><span class="pulse"></span> public-source snapshot ↗</a>
+      </header>
+
+      <section class="query-card" aria-label="Clinical trial graph query">
+        <label for="trial-question">Ask the context graph</label>
+        <div class="query-row">
+          <input id="trial-question" type="search" autocomplete="off" placeholder="e.g. Which studies involve aripiprazole?">
+          <button id="trial-ask-button" type="button">Explore graph</button>
+        </div>
+        <div class="examples">
+          <button type="button" data-trial-question="Which studies involve aripiprazole?">Aripiprazole</button>
+          <button type="button" data-trial-question="Which study is recruiting?">Recruiting</button>
+          <button type="button" data-trial-question="Which studies cover schizophrenia?">Schizophrenia</button>
+        </div>
+        <div id="trial-result" class="route-result" role="status">Search a public study, intervention, condition, phase, or status.</div>
+        <p class="disclosure">This is a curated snapshot of four public records for architecture discussion—not medical advice, an efficacy claim, or a live trial-finder.</p>
+      </section>
+
+      <section class="workspace" aria-label="Clinical trial knowledge graph">
+        <aside class="left-panel">
+          <p class="panel-label">Explore</p>
+          <input id="trial-search" type="search" autocomplete="off" placeholder="Search nodes…">
+          <div id="trial-filters" class="filters" aria-label="Filter graph by type"></div>
+          <button id="trial-reset" class="ghost-button" type="button">Reset graph</button>
+          <div class="legend">
+            <p class="panel-label">Context layers</p>
+            <div><i class="dot study"></i>Study record</div>
+            <div><i class="dot condition"></i>Condition</div>
+            <div><i class="dot intervention"></i>Intervention</div>
+            <div><i class="dot phase"></i>Phase / status</div>
+            <div><i class="dot sponsor"></i>Sponsor</div>
+          </div>
+        </aside>
+        <div class="graph-frame">
+          <div class="graph-label">Selected public study records · typed relationships</div>
+          <div id="network" aria-label="Clinical trials knowledge graph"></div>
+        </div>
+        <aside class="details-panel" aria-live="polite">
+          <p class="panel-label">Source detail</p>
+          <div id="trial-stats" class="stats-grid"></div>
+          <div id="trial-details" class="node-details"><h2>Select a node</h2><p>Source-backed trial context and a direct ClinicalTrials.gov record link will appear here.</p></div>
+          <div class="principle"><p class="panel-label">Why this is relevant</p><p>A production agent needs governed definitions and provenance before it produces a clinical or operational answer. This graph makes those sources and relationships inspectable.</p></div>
+        </aside>
+      </section>
+      <footer>Snapshot uses selected public ClinicalTrials.gov records. Revalidate records and status before any operational use.</footer>
+    </main>
+  </body>
+</html>

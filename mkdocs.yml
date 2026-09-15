@@ -1,0 +1,62 @@
+site_name: Snowflake × Cortex Context Engineering
+site_description: An independent, runnable reference implementation for hybrid agent context in Snowflake.
+site_url: https://yarmoluk.github.io/ckg-snowflake-hybrid-demo/
+repo_url: https://github.com/Yarmoluk/ckg-snowflake-hybrid-demo
+repo_name: Yarmoluk/ckg-snowflake-hybrid-demo
+edit_uri: edit/main/docs/
+
+theme:
+  name: material
+  language: en
+  logo: assets/brand/snowflex-cortex.svg
+  favicon: assets/brand/snowflex-cortex.svg
+  palette:
+    - media: "(prefers-color-scheme: light)"
+      scheme: snowflake
+      toggle:
+        icon: material/weather-night
+        name: Switch to dark mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      toggle:
+        icon: material/weather-sunny
+        name: Switch to light mode
+  features:
+    - navigation.instant
+    - navigation.tracking
+    - navigation.top
+    - navigation.footer
+    - content.code.copy
+    - content.code.select
+    - content.action.edit
+    - search.suggest
+    - search.highlight
+
+extra_css:
+  - stylesheets/extra.css
+
+markdown_extensions:
+  - admonition
+  - attr_list
+  - md_in_html
+  - pymdownx.details
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.inlinehilite
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
+  - pymdownx.tabbed:
+      alternate_style: true
+
+nav:
+  - Overview: index.md
+  - Architecture: architecture.md
+  - Semantic View: semantic-view.md
+  - Interactive demos:
+      - Hybrid explorer: explorer/index.md
+      - Clinical context: clinical-context.md
+  - Run it: quickstart.md
+  - Interview brief: interview-brief.md
